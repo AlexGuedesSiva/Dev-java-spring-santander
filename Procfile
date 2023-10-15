@@ -1,0 +1,1 @@
+web: java -jar build/libs/Dev-java-spring-santander-0.0.1-SNAPSHOT.jar
