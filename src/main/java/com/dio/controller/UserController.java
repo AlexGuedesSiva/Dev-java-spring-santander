@@ -19,11 +19,13 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/users")
 @Tag(name = "Users Controller", description = "RESTful API for managing users.")
-public record UserController(UserService userService){
+public record UserController(UserService userService) {
 
     @GetMapping
     @Operation(summary = "Get all users", description = "Retrieve a list of all registered users")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Operation successful")})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operation successful")
+    })
     public ResponseEntity<List<UserDto>> findAll() {
         var users = userService.findAll();
         var usersDto = users.stream().map(UserDto::new).collect(Collectors.toList());
@@ -32,8 +34,10 @@ public record UserController(UserService userService){
 
     @GetMapping("/{id}")
     @Operation(summary = "Get a user by ID", description = "Retrieve a specific user based on its ID")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Operation successful"),
-                           @ApiResponse(responseCode = "404", description = "User not Found") })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operation successful"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
     public ResponseEntity<UserDto> findById(@PathVariable Long id) {
         var user = userService.findById(id);
         return ResponseEntity.ok(new UserDto(user));
@@ -41,10 +45,11 @@ public record UserController(UserService userService){
 
     @PostMapping
     @Operation(summary = "Create a new user", description = "Create a new user and return the created user's data")
-    @ApiResponses( value = {
+    @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "User created successfully"),
-            @ApiResponse(responseCode = "422", description = "Invalid user data provided")})
-     public ResponseEntity<UserDto> create(@RequestBody UserDto userDto) {
+            @ApiResponse(responseCode = "422", description = "Invalid user data provided")
+    })
+    public ResponseEntity<UserDto> create(@RequestBody UserDto userDto) {
         var user = userService.create(userDto.toModel());
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
@@ -61,8 +66,8 @@ public record UserController(UserService userService){
             @ApiResponse(responseCode = "422", description = "Invalid user data provided")
     })
     public ResponseEntity<UserDto> update(@PathVariable Long id, @RequestBody UserDto userDto) {
-      var user = userService.update(id, userDto.toModel());
-      return ResponseEntity.ok(new UserDto(user));
+        var user = userService.update(id, userDto.toModel());
+        return ResponseEntity.ok(new UserDto(user));
     }
 
     @DeleteMapping("/{id}")
@@ -75,5 +80,4 @@ public record UserController(UserService userService){
         userService.delete(id);
         return ResponseEntity.noContent().build();
     }
-
 }
