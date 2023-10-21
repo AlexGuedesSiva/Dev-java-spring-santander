@@ -2,10 +2,7 @@ package com.dio.service;
 
 import com.dio.model.User;
 
-public interface UserService {
+public interface UserService extends CrudService<Long, User> {
 
-    User findById(Long id);
-
-    User create(User UserToCreate);
 
 }
